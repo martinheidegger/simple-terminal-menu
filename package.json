@@ -1,0 +1,28 @@
+{
+  "name": "simple-terminal-menu",
+  "version": "1.0.0",
+  "description": "A menu that is easier to use on the terminal than terminal-menu ",
+  "main": "simple-terminal-menu.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:martinheidegger/simple-terminal-menu.git"
+  },
+  "keywords": [
+    "menu",
+    "cli"
+  ],
+  "author": "Martin Heidegger <martin.heidegger@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/martinheidegger/simple-terminal-menu/issues"
+  },
+  "homepage": "https://github.com/martinheidegger/simple-terminal-menu",
+  "dependencies": {
+    "terminal-menu": "^2.1.1",
+    "visualwidth": "^0.1.0",
+    "xtend": "^4.0.0"
+  }
+}
