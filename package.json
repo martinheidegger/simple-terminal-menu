@@ -21,7 +21,7 @@
   },
   "homepage": "https://github.com/martinheidegger/simple-terminal-menu",
   "dependencies": {
-    "terminal-menu": "^2.1.1",
+    "extended-terminal-menu": "^2.1.2",
     "visualwidth": "^0.1.0",
     "xtend": "^4.0.0"
   }
