@@ -15,6 +15,17 @@ You don't have to do that, it will just work :)
 
 With this you can add entries that have a right-aligned marker text shown.
 
+## Menu Items
+You can also use `.addItem` to use objects to add menu items.
+
+```JavaScript
+.addItem({
+  label: "<label>",
+  marker: "<marker>",
+  handler: "<cb>"
+})
+```
+
 ## Separators
 Just use ```.writeSeparator()``` to create a separator line.
 
@@ -29,7 +40,14 @@ Similar like `.add` it supports `.writeLine` that allows you to write a text tha
 ```
 
 ## tty Tests
-If the terminal doesn't support TTY the  will just return a `null`.
+If the terminal doesn't support TTY the  will just return `null`!
+
+## Comfort functions
+To write a nice title and subtitle the comfort functions `.writeTitle` and `.writeSubtitle` exist.
+
+## Factory
+If you have several menus that need to look alike, you can use the factory. It is available via `require(simple-terminal-menu/factory)`.
+
 
 # Installation & Usage
 Install it using npm
@@ -48,7 +66,10 @@ function showSelection(label, marker) {
 }
 
 function mainMenu() {
-  var menu = createMenu()
+  var menu = createMenu({ // settings passed through to terminal-menu
+    x: 3,
+    y: 2
+  })
   menu.writeLine("My Menu", "(tm)")
   menu.writeSeparator()
   menu.add("A", "[selected]", showSelection)
@@ -66,8 +87,67 @@ function subMenu() {
   menu.add("D", showSelection)
   menu.writeSeparator()
   menu.add("cancel", mainMenu)
+  menu.add("niceTitle", nicelyTitledMenu)
   menu.add("exit", menu.close)
 }
+
+function nicelyTitledMenu() {
+  var menu = createMenu();
+  menu.writeTitle("Awesome window")
+  menu.writeSubtitle("A little more colorful")
+  menu.writeSeperator()
+  menu.add("cancel", subMenu)
+  menu.add("factoryA", factoryMenuA)
+  menu.add("exit", menu.close)
+}
+
+
+// Options for the menu when created through the factory
+var factoryMenuOptions = {} // Can be empty! the factory uses some sensible defaults!
+
+// Defaults for creating menu with the factory
+var defaultFactoryOptions = {
+  title: "Factory Title",
+  // you could also specify `subtitle:`, menu & extras are not available.
+}
+var factory = require('simple-terminal-menu/factory')(factoryMenuOptions, defaultFactoryOptions);
+
+function factoryMenuA() {
+  factory.create({
+    subtitle: "factory-a",
+    menu: [{
+      label: "E",
+      handler: showSelection
+    }, {
+      label: "F",
+      handler: showSelection
+    }],
+    extras: [{
+        label: "factoryB",
+        handler: factoryMenuB
+      },{
+        label: "cancel",
+        handler: nicelyTitledMenu
+      }]
+  })
+}
+
+function factoryMenuB() {
+  factory.create({
+    subtitle: "factory-b",
+    menu: [{
+        label: "G",
+        handler: showSelection
+      }],
+    extras: [{
+        label: "factoryA",
+        handler: factoryMenuA
+      },{
+        label: "cancel",
+        handler: nicelyTitledMenu
+      }]
+}
+
 
 mainMenu()
 ```

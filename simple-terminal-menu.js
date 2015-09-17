@@ -3,6 +3,7 @@ const tmenu        = require('extended-terminal-menu')
     , fs           = require('fs')
     , xtend        = require('xtend')
     , vw           = require('visualwidth')
+    , chalk        = require('chalk')
 
 const maxListenersPerEvent = 10
 
@@ -38,6 +39,10 @@ function createMenu (opts) {
 
   menu.entryCount = 0
 
+  menu.addItem = function (item) {
+    menu.add(item.label, item.marker, item.handler)
+  }
+
   menu.add = function (label, marker, cb) {
   	if (typeof marker == 'function') {
   		cb = marker
@@ -57,6 +62,14 @@ function createMenu (opts) {
 
   menu.writeSeparator = function () {
   	menu.write(repeat(opts.separator, menu.width) + '\n')
+  }
+
+  menu.writeTitle = function (title) {
+    menu.writeLine(chalk.bold(title))
+  }
+
+  menu.writeSubtitle = function (subtitle) {
+    menu.writeLine(chalk.italic(subtitle))
   }
 
   menu.close = function () {
