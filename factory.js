@@ -30,6 +30,9 @@ module.exports = function (options, defaults) {
         , title = data.title || defaults.title
         , subtitle = data.subtitle || defaults.subtitle
 
+      if (!menu)
+        return null
+
       if (title)
         menu.writeTitle(title)
 
@@ -45,6 +48,7 @@ module.exports = function (options, defaults) {
         menu.writeSeparator()
         data.extras.forEach(menu.addItem)
       }
+      return menu
     }
   }
 }
