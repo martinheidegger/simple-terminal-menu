@@ -2,7 +2,7 @@ const tmenu        = require('extended-terminal-menu')
     , path         = require('path')
     , fs           = require('fs')
     , xtend        = require('xtend')
-    , vw           = require('visualwidth')
+    , wcstring     = require('wcstring')
     , chalk        = require('chalk')
 
 const maxListenersPerEvent = 10
@@ -14,11 +14,15 @@ function repeat (ch, sz) {
 }
 
 function applyTextMarker (truncate, width, text, marker) {
-  var availableSpace = width - vw.width(marker, true)
+  var availableSpace = width - wcstring(marker).size()
+  var wText = wcstring(text)
 
-  text = vw.truncate(text, availableSpace, '...', true)
-
-  return text + repeat(' ', availableSpace - vw.width(text, true)) + marker
+  if (availableSpace < wText.size()) {
+    text = wText.truncate(availableSpace, truncate)
+  } else {
+    text += repeat('', availableSpace - wText.size())
+  }
+  return text + marker
 }
 
 function createMenu (opts) {
@@ -50,14 +54,14 @@ function createMenu (opts) {
   	}
     menu.entryCount += 1
     menu.setMaxListeners(menu.entryCount * maxListenersPerEvent)
-    _add(txtMarker(label, marker || '', menu.width), function () {
+    _add(txtMarker(label, marker || ''), function () {
       if (typeof cb === 'function')
         cb(label, marker)
     })
   }
 
   menu.writeLine = function (label, marker) {
-    menu.write(txtMarker(label, marker || '', menu.width) + '\n')
+    menu.write(txtMarker(label, marker || '') + '\n')
   }
 
   menu.writeSeparator = function () {
