@@ -1,6 +1,6 @@
 {
   "name": "simple-terminal-menu",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "A menu that is easier to use on the terminal than terminal-menu ",
   "main": "simple-terminal-menu.js",
   "scripts": {
