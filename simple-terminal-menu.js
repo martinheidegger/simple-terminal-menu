@@ -20,7 +20,7 @@ function applyTextMarker (truncate, width, text, marker) {
   if (availableSpace < wText.size()) {
     text = wText.truncate(availableSpace, truncate)
   } else {
-    text += repeat('', availableSpace - wText.size())
+    text += repeat(' ', availableSpace - wText.size())
   }
   return text + marker
 }
