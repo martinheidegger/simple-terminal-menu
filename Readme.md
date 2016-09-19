@@ -146,9 +146,9 @@ function factoryMenuB() {
         label: "cancel",
         handler: nicelyTitledMenu
       }]
+  });
 }
 
 
 mainMenu()
 ```
-
