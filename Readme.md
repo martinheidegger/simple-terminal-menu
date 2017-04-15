@@ -1,5 +1,5 @@
 # simple-terminal-menu
-[terminal-menu](github.com/substack/terminal-menu) does a good job for starting a menu but it is a bit tedious to set-up reliably for process.stdin / process.stdout and also for the use with double width characters.
+[terminal-menu](https://github.com/substack/terminal-menu) does a good job for starting a menu but it is a bit tedious to set-up reliably for process.stdin / process.stdout and also for the use with double width characters.
 
 For simply taking charge of the power this terminal menu offers a few things:
 
@@ -67,8 +67,18 @@ function showSelection(label, marker) {
 
 function mainMenu() {
   var menu = createMenu({ // settings passed through to terminal-menu
-    x: 3,
-    y: 2
+    width: 80,   // menu width in columns
+    x: 1,        // top-left corner x offset, default: 1
+    y: 1,        // top-left corner y offset, default: 1
+    fg: 'white', // foreground color, default: 'white'
+    bg: 'blue',  // background color, default: 'blue'
+    padding: {
+      left: 0    // left padding in columns
+      right: 0   // right padding in columns
+      top: 0     // top padding in rows
+      bottom: 0  // bottom padding in rows
+    },
+    selected: 0  // set the selected element by its index
   })
   menu.writeLine("My Menu", "(tm)")
   menu.writeSeparator()
