@@ -105,7 +105,7 @@ function nicelyTitledMenu() {
   var menu = createMenu();
   menu.writeTitle("Awesome window")
   menu.writeSubtitle("A little more colorful")
-  menu.writeSeperator()
+  menu.writeSeparator()
   menu.add("cancel", subMenu)
   menu.add("factoryA", factoryMenuA)
   menu.add("exit", menu.close)
