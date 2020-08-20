@@ -162,3 +162,7 @@ function factoryMenuB() {
 
 mainMenu()
 ```
+
+## License
+
+[MIT]

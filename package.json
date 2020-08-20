@@ -15,7 +15,7 @@
     "cli"
   ],
   "author": "Martin Heidegger <martin.heidegger@gmail.com>",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/martinheidegger/simple-terminal-menu/issues"
   },
