@@ -1,7 +1,6 @@
 const tmenu = require('extended-terminal-menu')
 const wcstring = require('wcstring')
 const chalk = require('chalk')
-const xtend = require('xtend')
 
 const maxListenersPerEvent = 10
 
@@ -29,7 +28,7 @@ function simpleTerminalMenu (opts) {
     return null
   }
 
-  opts = xtend({
+  opts = Object.assign({
     separator: '\u2500',
     truncate: '...'
   }, opts)
