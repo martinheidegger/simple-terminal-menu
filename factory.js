@@ -1,53 +1,46 @@
-var createMenu = require('./simple-terminal-menu')
-  , defaultWidth = 65
-  , defaultX = 3
-  , defaultY = 2
+const createMenu = require('./simple-terminal-menu')
+const moduleDefaults = {
+  width: 65,
+  x: 3,
+  y: 2
+}
 
-function writeMenu(entries) {
-  entries.forEach(menu.addObject)
+function writeEntries (menu, items) {
+  if (typeof items === 'function') {
+    items = items(menu)
+  }
+  if (!Array.isArray(items) || items.length === 0) {
+    return
+  }
+  menu.writeSeparator()
+  items.forEach(menu.addItem)
 }
 
 module.exports = function (options, defaults) {
-  if (!options)
-    options = {}
-
-  if (!defaults)
-    defaults = {}
-
-  if (typeof options.width !== 'number')
-    options.width = defaultWidth
-
-  if (typeof options.x !== 'number')
-    options.x = defaultX
-
-  if (typeof options.y !== 'number')
-    options.y = defaultY
+  options = Object.assign({}, moduleDefaults, options)
 
   return {
     options: options,
-    create: function create(data) {
-      var menu = createMenu(options)
-        , title = data.title || defaults.title
-        , subtitle = data.subtitle || defaults.subtitle
+    create: function create (data) {
+      const menu = createMenu(options)
 
-      if (!menu)
+      if (!menu) {
         return null
+      }
 
-      if (title)
+      const title = data.title || defaults && defaults.title
+      if (title) {
         menu.writeTitle(title)
+      }
 
-      if (subtitle)
+      const subtitle = data.subtitle || defaults && defaults.subtitle
+      if (subtitle) {
         menu.writeSubtitle(subtitle)
-
-      if (data.menu) {
-        menu.writeSeparator()
-        data.menu.forEach(menu.addItem)
       }
 
-      if (data.extras) {
-        menu.writeSeparator()
-        data.extras.forEach(menu.addItem)
-      }
+
+      writeEntries(menu, data.menu)
+      writeEntries(menu, data.extras)
       return menu
     }
   }

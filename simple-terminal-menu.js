@@ -1,9 +1,7 @@
-const tmenu        = require('extended-terminal-menu')
-    , path         = require('path')
-    , fs           = require('fs')
-    , xtend        = require('xtend')
-    , wcstring     = require('wcstring')
-    , chalk        = require('chalk')
+const tmenu = require('extended-terminal-menu')
+const wcstring = require('wcstring')
+const chalk = require('chalk')
+const xtend = require('xtend')
 
 const maxListenersPerEvent = 10
 
@@ -14,8 +12,8 @@ function repeat (ch, sz) {
 }
 
 function applyTextMarker (truncate, width, text, marker) {
-  var availableSpace = width - wcstring(marker).size()
-  var wText = wcstring(text)
+  const availableSpace = width - wcstring(marker).size()
+  const wText = wcstring(text)
 
   if (availableSpace < wText.size()) {
     text = wText.truncate(availableSpace, truncate)
@@ -25,21 +23,21 @@ function applyTextMarker (truncate, width, text, marker) {
   return text + marker
 }
 
-function createMenu (opts) {
 
-  if (!process.stdin.isTTY)
+function simpleTerminalMenu (opts) {
+  if (!process.stdin.isTTY) {
     return null
+  }
 
   opts = xtend({
-      separator: '\u2500'
-    , truncate: '...'
+    separator: '\u2500',
+    truncate: '...'
   }, opts)
 
-  var menu = tmenu(opts)
-    , _add = menu.add.bind(menu)
-    , _close = menu.close.bind(menu)
-    , txtMarker = applyTextMarker.bind(null, opts.truncate, menu.width)
-    , menuStream
+  const menu = tmenu(opts)
+  const _add = menu.add.bind(menu)
+  const _close = menu.close.bind(menu)
+  const txtMarker = applyTextMarker.bind(null, opts.truncate, menu.width)
 
   menu.entryCount = 0
 
@@ -65,7 +63,7 @@ function createMenu (opts) {
   }
 
   menu.writeSeparator = function () {
-  	menu.write(repeat(opts.separator, menu.width) + '\n')
+    menu.write(repeat(opts.separator, menu.width) + '\n')
   }
 
   menu.writeTitle = function (title) {
@@ -90,7 +88,7 @@ function createMenu (opts) {
     menuStream.write(data)
   }
 
-  function close() {
+  function close () {
     process.stdin.pause()
     process.stdin.removeListener('data', passDataToMenu)
     menuStream.unpipe(process.stdout)
@@ -100,11 +98,11 @@ function createMenu (opts) {
 
   menu.on('select', menu.close.bind(menu))
 
-  menuStream = menu.createStream()
+  const menuStream = menu.createStream()
   process.stdin
-    .on("data", passDataToMenu)
+    .on('data', passDataToMenu)
 
-  menuStream.pipe(process.stdout, {end: false})
+  menuStream.pipe(process.stdout, { end: false })
   menuStream.on('end', close)
   process.stdin.setRawMode(true)
   process.stdin.resume()
@@ -112,5 +110,4 @@ function createMenu (opts) {
   return menu
 }
 
-
-module.exports = createMenu
+module.exports = simpleTerminalMenu
