@@ -1,6 +1,6 @@
 const tmenu = require('extended-terminal-menu')
 const wcstring = require('wcstring')
-const chalk = require('chalk')
+const ansi = require('ansi-styles')
 
 const maxListenersPerEvent = 10
 
@@ -66,11 +66,11 @@ function simpleTerminalMenu (opts) {
   }
 
   menu.writeTitle = function (title) {
-    menu.writeLine(chalk.bold(title))
+    menu.writeLine(ansi.bold.open + title + ansi.bold.close)
   }
 
   menu.writeSubtitle = function (subtitle) {
-    menu.writeLine(chalk.italic(subtitle))
+    menu.writeLine(ansi.italic.open + subtitle + ansi.italic.close)
   }
 
   menu.close = function () {

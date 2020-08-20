@@ -22,7 +22,7 @@
   },
   "homepage": "https://github.com/martinheidegger/simple-terminal-menu",
   "dependencies": {
-    "chalk": "^1.1.1",
+    "ansi-styles": "^4.2.1",
     "extended-terminal-menu": "^2.1.2",
     "wcstring": "^2.1.0"
   },
