@@ -125,6 +125,9 @@ var factory = require('simple-terminal-menu/factory')(factoryMenuOptions, defaul
 function factoryMenuA() {
   factory.create({
     subtitle: "factory-a",
+    before: (menu) => {
+      // Do anything you like before menu/extras are added
+    }
     menu: [{
       label: "E",
       handler: showSelection
@@ -138,7 +141,10 @@ function factoryMenuA() {
       },{
         label: "cancel",
         handler: nicelyTitledMenu
-      }]
+      }],
+    after: (menu) => {
+      // Do anything you like after menu/extras are added
+    }
   })
 }
 

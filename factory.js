@@ -38,9 +38,23 @@ module.exports = function (options, defaults) {
         menu.writeSubtitle(subtitle)
       }
 
+      if (typeof defaults.before === 'function') {
+        defaults.before(menu)
+      }
+      if (typeof data.before === 'function') {
+        data.before(menu)
+      }
 
       writeEntries(menu, data.menu)
       writeEntries(menu, data.extras)
+
+      if (typeof data.after === 'function') {
+        data.after(menu)
+      }
+      if (typeof defaults.after === 'function') {
+        defaults.after(menu)
+      }
+
       return menu
     }
   }
