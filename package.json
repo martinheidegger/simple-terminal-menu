@@ -4,8 +4,9 @@
   "description": "A menu that is easier to use on the terminal than terminal-menu ",
   "main": "simple-terminal-menu.js",
   "scripts": {
-    "test": "npm run test:lint",
-    "test:lint": "standard"
+    "test": "npm run test:lint && npm run test:typescript",
+    "test:lint": "standard",
+    "test:typescript": "npx -p typescript -p ts-node -c 'ts-node test/types.ts'"
   },
   "repository": {
     "type": "git",
@@ -27,6 +28,7 @@
     "wcstring": "^2.1.0"
   },
   "devDependencies": {
+    "@types/node": "^14.6.0",
     "standard": "^14.3.4"
   }
 }
