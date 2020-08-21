@@ -1,5 +1,6 @@
 # simple-terminal-menu
-[terminal-menu](https://github.com/substack/terminal-menu) does a good job for starting a menu but it is a bit tedious to set-up reliably for process.stdin / process.stdout and also for the use with double width characters.
+
+[`terminal-menu`](https://github.com/substack/terminal-menu) does a good job for starting a menu but it is a bit tedious to set-up reliably for process.stdin / process.stdout and also for the use with double width characters.
 
 For simply taking charge of the power this terminal menu offers a few things:
 
@@ -20,7 +21,12 @@ menu.start(process) // Optionally you can pass in a custom process here for test
 `.add` gets an new signature
 
 ```JavaScript
-.add(<label>[, <marker>][, <cb>])
+const label = 'hello' // will be aligned left
+const marker = '(tm)' // (optional) will be aligned right
+const handler = (label, marker) => {
+  // (optional) will be called in case the item is chosen
+}
+menu.add(label, marker, handler)
 ```
 
 With this you can add entries that have a right-aligned marker text shown.
@@ -29,10 +35,12 @@ With this you can add entries that have a right-aligned marker text shown.
 You can also use `.addItem` to use objects to add menu items.
 
 ```JavaScript
-.addItem({
-  label: "<label>",
-  marker: "<marker>",
-  handler: "<cb>"
+menu.addItem({
+  label: 'hello', // will be aligned left
+  marker: '(tm)', // (optional) will be aligned right
+  handler: (label, index, item) => {
+    // (optional) will be called in case the item is chosen
+  }
 })
 ```
 
@@ -52,11 +60,20 @@ Similar like `.add` it supports `.writeLine` that allows you to write a text tha
 ## tty Tests
 If the terminal doesn't support TTY `new TerminalMenu` will just `null`!
 
+```js
+const TerminalMenu = require('simple-terminal-menu')
+const menu = new TerminalMenu()
+if (menu === null) {
+  console.log('interactive menu not supported')
+  process.exit(1)
+}
+```
+
 ## Comfort functions
 To write a nice title and subtitle the comfort functions `.writeTitle` and `.writeSubtitle` exist.
 
 ## Factory
-If you have several menus that need to look alike, you can use the factory. It is available via `require(simple-terminal-menu/factory)`.
+If you have several menus that need to look alike, you can use the factory. It is available via `require('simple-terminal-menu/factory')`.
 
 
 # Installation & Usage
@@ -71,8 +88,8 @@ And then create a menu it in your code using
 ```JavaScript
 const TerminalMenu = require('../simple-terminal-menu')
 
-function showSelection(label, marker) {
-  console.log("label: " + label + "; marker: " + marker + ";")
+function showSelection(label, index, item) {
+  console.log("label: " + label + "; marker: " + item.marker + ";")
 }
 
 function mainMenu() {
@@ -90,6 +107,12 @@ function mainMenu() {
     },
     selected: 0  // set the selected element by its index
   })
+
+  if (menu === null) {
+    // In case the terminal is not interactive the result is null
+    console.log('terminal is not interactive')
+    return
+  }
   menu.writeLine("My Menu", "(tm)")
   menu.writeSeparator()
   menu.add("A", "[selected]", showSelection)
@@ -181,4 +204,4 @@ mainMenu()
 
 ## License
 
-[MIT]
+[MIT](./LICENSE)
