@@ -53,7 +53,7 @@ function subMenuX () {
     before: menu => menu.writeLine('X'),
     menu: [
       { label: 'C', marker: '[selected]', handler: showSelection },
-      { label: 'D', handler: showSelection },
+      { label: 'D', handler: showSelection }
     ],
     extras: subExtras
   })
@@ -63,8 +63,8 @@ function subMenuY () {
   const menu = create({
     before: menu => menu.writeLine('Y'),
     menu: [
-      { label: 'E' },
-      { label: 'F is longer than you might think, a lot longer in fact, long enough to force trimming', marker: '[selected]' },
+      { label: 'E も問題なく動いている。' },
+      { label: 'F is longer than you might think, a lot longer in fact, long enough to force trimming', marker: '[selected]' }
     ],
     extras: subExtras
   })
