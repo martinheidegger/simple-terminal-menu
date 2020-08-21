@@ -1,4 +1,4 @@
-const createMenu = require('./simple-terminal-menu')
+const SimpleTerminalMenu = require('./simple-terminal-menu')
 const moduleDefaults = {
   width: 65,
   x: 3,
@@ -22,18 +22,18 @@ module.exports = function (options, defaults) {
   return {
     options: options,
     create: function create (data) {
-      const menu = createMenu(options)
+      const menu = new SimpleTerminalMenu(options)
 
       if (!menu) {
         return null
       }
 
-      const title = data.title || defaults && defaults.title
+      const title = data.title || (defaults && defaults.title)
       if (title) {
         menu.writeTitle(title)
       }
 
-      const subtitle = data.subtitle || defaults && defaults.subtitle
+      const subtitle = data.subtitle || (defaults && defaults.subtitle)
       if (subtitle) {
         menu.writeSubtitle(subtitle)
       }

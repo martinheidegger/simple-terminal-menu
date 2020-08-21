@@ -5,7 +5,7 @@
   "main": "simple-terminal-menu.js",
   "scripts": {
     "test": "npm run test:lint",
-    "test:lint": "standard",
+    "test:lint": "standard"
   },
   "repository": {
     "type": "git",
@@ -23,7 +23,7 @@
   "homepage": "https://github.com/martinheidegger/simple-terminal-menu",
   "dependencies": {
     "ansi-styles": "^4.2.1",
-    "extended-terminal-menu": "^2.1.2",
+    "extended-terminal-menu": "^3.0.3",
     "wcstring": "^2.1.0"
   },
   "devDependencies": {

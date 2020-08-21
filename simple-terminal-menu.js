@@ -1,112 +1,129 @@
-const tmenu = require('extended-terminal-menu')
+const TerminalMenu = require('extended-terminal-menu')
 const wcstring = require('wcstring')
 const ansi = require('ansi-styles')
-
-const maxListenersPerEvent = 10
-
-process.stdin.pause()
 
 function repeat (ch, sz) {
   return new Array(sz + 1).join(ch)
 }
 
-function applyTextMarker (truncate, width, text, marker) {
-  const availableSpace = width - wcstring(marker).size()
-  const wText = wcstring(text)
+module.exports = class SimpleTerminalMenu extends TerminalMenu {
+  constructor (opts) {
+    super(opts)
+    this.truncate = (opts && opts.truncate) || '...'
+    this.separator = (opts && opts.separator) || '\u2500'
 
-  if (availableSpace < wText.size()) {
-    text = wText.truncate(availableSpace, truncate)
-  } else {
-    text += repeat(' ', availableSpace - wText.size())
-  }
-  return text + marker
-}
+    this.add = this.add.bind(this)
+    this.addItem = this.addItem.bind(this)
+    this.close = this.close.bind(this)
+    this.reset = this.reset.bind(this)
+    this.write = this.write.bind(this)
+    this.writeLine = this.writeLine.bind(this)
+    this.writeSeparator = this.writeSeparator.bind(this)
+    this.writeSubtitle = this.writeSubtitle.bind(this)
+    this.writeTitle = this.writeTitle.bind(this)
+    this.writeBold = this.writeBold.bind(this)
+    this.writeItalic = this.writeItalic.bind(this)
 
-
-function simpleTerminalMenu (opts) {
-  if (!process.stdin.isTTY) {
-    return null
-  }
-
-  opts = Object.assign({
-    separator: '\u2500',
-    truncate: '...'
-  }, opts)
-
-  const menu = tmenu(opts)
-  const _add = menu.add.bind(menu)
-  const _close = menu.close.bind(menu)
-  const txtMarker = applyTextMarker.bind(null, opts.truncate, menu.width)
-
-  menu.entryCount = 0
-
-  menu.addItem = function (item) {
-    menu.add(item.label, item.marker, item.handler)
+    if (opts.autoStart !== false) {
+      this.start()
+    }
   }
 
-  menu.add = function (label, marker, cb) {
-  	if (typeof marker == 'function') {
-  		cb = marker
-  		marker = null
-  	}
-    menu.entryCount += 1
-    menu.setMaxListeners(menu.entryCount * maxListenersPerEvent)
-    _add(txtMarker(label, marker || ''), function () {
-      if (typeof cb === 'function')
-        cb(label, marker)
+  _txtMarker (label, marker) {
+    marker = marker || ''
+    const availableSpace = this.width - wcstring(marker).size()
+    const wText = wcstring(label)
+
+    let line
+    if (availableSpace < wText.size()) {
+      line = wText.truncate(availableSpace, this.truncate)
+    } else {
+      line = label + repeat(' ', availableSpace - wText.size())
+    }
+    return line + marker
+  }
+
+  get entryCount () {
+    return this.entries.length
+  }
+
+  addItem (item) {
+    this.add(item) // legacy
+  }
+
+  add (label, marker, handler) {
+    let item
+    if (typeof label === 'string') {
+      item = { label: label }
+    } else {
+      item = label
+    }
+    if (typeof marker === 'function') {
+      item.handler = marker
+    } else {
+      item.marker = item.marker || marker
+      item.handler = item.handler || handler
+    }
+    if (!item.line) {
+      item.line = this._txtMarker(item.label, item.marker)
+    }
+    super.add(item)
+  }
+
+  writeLine (label, marker) {
+    this.write(this._txtMarker(label, marker) + '\n')
+  }
+
+  writeSeparator () {
+    this.write(repeat(this.separator, this.width) + '\n')
+  }
+
+  writeBold (label, marker) {
+    this.writeLine(ansi.bold.open + this._txtMarker(label, marker) + ansi.bold.close)
+  }
+
+  writeItalic (label, marker) {
+    this.writeLine(ansi.italic.open + this._txtMarker(label, marker) + ansi.italic.close)
+  }
+
+  writeTitle (title, marker) {
+    this.writeBold(title, marker)
+  }
+
+  writeSubtitle (subtitle, marker) {
+    this.writeItalic(subtitle, marker)
+  }
+
+  close () {
+    this.reset()
+    this.y = 0
+    this.charm.erase('screen')
+    super.close()
+  }
+
+  confirmSelection () {
+    this._output.once('end', () => {
+      super.confirmSelection()
     })
+    this.close()
   }
 
-  menu.writeLine = function (label, marker) {
-    menu.write(txtMarker(label, marker || '') + '\n')
+  start (p) {
+    if (p === undefined) {
+      p = process
+    }
+    this.reset()
+    const pass = data => menuStream.write(data)
+    const menuStream = this.createStream()
+    menuStream.pipe(p.stdout, { end: false })
+    this._output.once('end', () => {
+      p.stdin.pause()
+      menuStream.unpipe(p.stdout)
+      p.stdin.setRawMode(false)
+      p.stdin.removeListener('data', pass)
+    })
+    p.stdin.on('data', pass)
+    p.stdin.setRawMode(true)
+    p.stdin.resume()
   }
-
-  menu.writeSeparator = function () {
-    menu.write(repeat(opts.separator, menu.width) + '\n')
-  }
-
-  menu.writeTitle = function (title) {
-    menu.writeLine(ansi.bold.open + title + ansi.bold.close)
-  }
-
-  menu.writeSubtitle = function (subtitle) {
-    menu.writeLine(ansi.italic.open + subtitle + ansi.italic.close)
-  }
-
-  menu.close = function () {
-    menu.y = 0
-    menu.reset()
-    _close()
-    close()
-  }
-
-  menu.reset()
-
-  function passDataToMenu (data) {
-    // Node 0.10 fix
-    menuStream.write(data)
-  }
-
-  function close () {
-    process.stdin.pause()
-    process.stdin.removeListener('data', passDataToMenu)
-    menuStream.unpipe(process.stdout)
-    process.stdin.unpipe(menuStream)
-    process.stdin.setRawMode(false)
-  }
-
-  menu.on('select', menu.close.bind(menu))
-
-  const menuStream = menu.createStream()
-  process.stdin
-    .on('data', passDataToMenu)
-
-  menuStream.pipe(process.stdout, { end: false })
-  menuStream.on('end', close)
-  process.stdin.setRawMode(true)
-  process.stdin.resume()
-
-  return menu
 }
-
-module.exports = simpleTerminalMenu

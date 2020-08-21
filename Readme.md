@@ -6,6 +6,16 @@ For simply taking charge of the power this terminal menu offers a few things:
 ## Automatically connects to process.stdin/stdout
 You don't have to do that, it will just work :)
 
+You can manually trigger start if you like using the `.autoStart: false` option and start it by hand:
+
+```javascript
+const menu = new TerminalMenu({
+  autoStart: false
+})
+// Then start it manually
+menu.start(process) // Optionally you can pass in a custom process here for testing.
+```
+
 ## Markers
 `.add` gets an new signature
 
@@ -40,7 +50,7 @@ Similar like `.add` it supports `.writeLine` that allows you to write a text tha
 ```
 
 ## tty Tests
-If the terminal doesn't support TTY the  will just return `null`!
+If the terminal doesn't support TTY `new TerminalMenu` will just `null`!
 
 ## Comfort functions
 To write a nice title and subtitle the comfort functions `.writeTitle` and `.writeSubtitle` exist.
@@ -59,14 +69,14 @@ npm install simple-terminal-menu --save
 And then create a menu it in your code using
 
 ```JavaScript
-var createMenu = require('../simple-terminal-menu')
+const TerminalMenu = require('../simple-terminal-menu')
 
 function showSelection(label, marker) {
   console.log("label: " + label + "; marker: " + marker + ";")
 }
 
 function mainMenu() {
-  var menu = createMenu({ // settings passed through to terminal-menu
+  const menu = new TerminalMenu({ // settings passed through to terminal-menu
     width: 80,   // menu width in columns
     x: 1,        // top-left corner x offset, default: 1
     y: 1,        // top-left corner y offset, default: 1
@@ -90,7 +100,7 @@ function mainMenu() {
 }
 
 function subMenu() {
-  var menu = createMenu()
+  const menu = new TerminalMenu()
   menu.writeLine("SubMenu")
   menu.writeSeparator()
   menu.add("C", "[selected]", showSelection)
@@ -102,7 +112,7 @@ function subMenu() {
 }
 
 function nicelyTitledMenu() {
-  var menu = createMenu();
+  const menu = new TerminalMenu();
   menu.writeTitle("Awesome window")
   menu.writeSubtitle("A little more colorful")
   menu.writeSeparator()
